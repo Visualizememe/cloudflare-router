@@ -37,8 +37,11 @@ addEventListener("fetch", event => {
 
 ```
 
+### Installing
+
+Simply enter the following command into your terminal:
+```
+npm install cloudflare-router
+```
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router?ref=badge_large)
-[npm-image]:https://img.shields.io/npm/v/cloudflare-router.svg
-[npm-url]:https://npmjs.com/package/cloudflare-router
-[]
