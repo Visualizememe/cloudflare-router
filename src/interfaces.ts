@@ -1,11 +1,12 @@
 export declare type IncomingEvent = {
     type: "fetch";
-    request: EventRequest;
+    request: IncomingRequest;
     passThroughOnException: () => void;
     respondWith: (callback: Promise<unknown> | unknown) => void;
     waitUntil: (tasks: Promise<unknown>) => void;
 };
-export declare type EventRequest = {
+
+export declare type IncomingRequest = {
     url: string;
     method: string;
     body: ReadableStream;
@@ -35,9 +36,9 @@ export declare type EventRequest = {
         cacheTtl: number;
         resolveOverride: string;
     };
-    clone: () => EventRequest;
+    clone: () => IncomingRequest;
     headers: Headers;
-    json: () => Promise<{ [key: string]: unknown } | null>;
+    json: () => Promise<Record<string, unknown> | unknown[]>;
     fetch: () => Promise<Response>;
     blob: () => Promise<Blob | null>;
     formData: () => Promise<FormData | null>;

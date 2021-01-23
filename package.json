@@ -1,10 +1,23 @@
 {
   "name": "cloudflare-router",
-  "version": "1.1.103",
-  "description": "A simple (yet powerful) Cloudflare Workers router",
+  "private": false,
+  "version": "1.2.0",
+  "description": "An express-like Cloudflare Workers Router library to make processing requests much easier",
   "main": "dist/index.js",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "cloudflare router",
+    "workers router",
+    "cloudflare workers router",
+    "cloudflare-workers",
+    "cloudflare-router"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "tsc --skipLibCheck",
     "prepublish": "npm run build"
   },
@@ -22,12 +35,16 @@
     "eslint": "^6.8.0",
     "eslint-plugin-security": "^1.4.0",
     "jest": "^26.6.3",
+    "joi": "^17.3.0",
     "typescript": "^3.9.7"
   },
+  "bugs": {
+    "url": "https://github.com/Visualizememe/cloudflare-router/issues"
+  },
   "repository": {
-    "directory": "https://github.com/ScriptersCF/node-cf-router",
-    "type": "GitHub",
-    "url": "https://github.com/ScriptersCF/node-cf-router"
+    "directory": "https://github.com/Visualizememe/cloudflare-router",
+    "url": "https://github.com/Visualizememe/cloudflare-router",
+    "type": "GitHub"
   },
   "types": "dist/index.d.ts"
 }

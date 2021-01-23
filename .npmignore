@@ -1,2 +1,5 @@
 .idea
 node_modules
+.circleci
+.eslintignore
+.eslintrc.json
