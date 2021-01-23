@@ -15,7 +15,8 @@ jobs:
             - run: npm run build
             - run: npm run test
       - codecov/upload:
-          file: { { coverage_report_filepath } }
+          file: "./coverage/clover.xml"
+          token: bc55e615-594b-40a3-bf51-3e408a8e5f85
 workflows:
   verification:
     jobs:

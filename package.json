@@ -46,5 +46,9 @@
     "url": "https://github.com/Visualizememe/cloudflare-router",
     "type": "GitHub"
   },
-  "types": "dist/index.d.ts"
+  "types": "dist/index.d.ts",
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
+  }
 }

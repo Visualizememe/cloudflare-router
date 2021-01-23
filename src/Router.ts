@@ -19,7 +19,7 @@ import RouterResponse from "./RouterResponse";
  * Methods that can be used for the Route, use "ANY" for any methods
  * Default is "GET"
  */
-export type Methods = "ANY" | "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+export type Methods = "ANY" | "GET" | "POST" | "PUT" | "PATCH" | "OPTIONS" | "HEAD" | "DELETE";
 
 
 /**
@@ -159,6 +159,10 @@ interface RouterOptions<AdditionalDataType extends any> {
      * This is useful if you want to implement testing
      */
     customResponseTransformer?: (data: RouterResponse<AdditionalDataType>["response"]) => unknown;
+    /**
+     * (Internal use): The parent router
+     */
+    parent?: Router<AdditionalDataType>;
 }
 
 
@@ -173,6 +177,16 @@ class Router<AdditionalDataType extends unknown> {
     public isWaterfall: boolean;
     public routes: Route<AdditionalDataType>[];
     public customResponseTransformer?: RouterOptions<AdditionalDataType>["customResponseTransformer"];
+    /**
+     * The "parent" of all the routers, which will be processing the incoming requests
+     * @type {Router<AdditionalDataType> | null}
+     */
+    public parent: Router<AdditionalDataType> | null;
+    /**
+     * The main Router
+     * @type {Router<AdditionalDataType>}
+     */
+    public main: Router<AdditionalDataType>;
 
     /**
      * Creates a new Router
@@ -182,9 +196,23 @@ class Router<AdditionalDataType extends unknown> {
         this.isWaterfall = options.waterfallMiddleware || true;
         this.routes = [];
         this.customResponseTransformer = options.customResponseTransformer;
+        this.parent = options.parent || null;
+        this.main = this.getMainRouter();
 
         // We need to put this at the end, otherwise we will risk this.routes to not be defined
         this.basePath = this.setBasePath(options.basePath);
+    }
+
+    /**
+     * Recursively goes up and finds the main router
+     * @returns {Router<AdditionalDataType>}
+     */
+    public getMainRouter (): Router<AdditionalDataType> {
+        if (this.parent) {
+            return this.parent.getMainRouter();
+        } else {
+            return this;
+        }
     }
 
     public findMatchingRoutes (request: RouterRequest<AdditionalDataType>): MatchingRoute<AdditionalDataType>[] {
@@ -251,11 +279,10 @@ class Router<AdditionalDataType extends unknown> {
                 }
             }
 
-            // Wait for the response
+            // Wait for the response handler to finish
             await (responseHandler.route.handler as RouteFunctionHandler<AdditionalDataType>)(request, response, additionalData);
 
-            const builtResponse = response.buildResponse();
-            console.log(builtResponse);
+            return response.buildResponse();
         }
     }
 
@@ -280,6 +307,28 @@ class Router<AdditionalDataType extends unknown> {
         return createdRoute;
     }
 
+    public use (path: string, handler: RouteHandler<AdditionalDataType>): void {
+        if (handler instanceof Router) {
+            // Since it's a router, we need to adjust its base path and parent router
+            handler.setBasePath(this.fixPath(path));
+            handler.setParentRouter(this);
+
+            this.createRoute({
+                path,
+                handler,
+                method: "ANY",
+                isMiddleware: false
+            });
+        } else {
+            this.createRoute({
+                path,
+                handler,
+                method: "ANY",
+                isMiddleware: true
+            });
+        }
+    }
+
     public get (path: string, handler: RouteHandler<AdditionalDataType>): void {
         this.createRoute({
             path,
@@ -297,6 +346,34 @@ class Router<AdditionalDataType extends unknown> {
             isMiddleware: false
         });
     }
+
+    public options (path: string, handler: RouteFunctionHandler<AdditionalDataType>) {
+        this.createRoute({
+            path,
+            handler,
+            method: "OPTIONS",
+            isMiddleware: false
+        });
+    }
+
+    public head (path: string, handler: RouteFunctionHandler<AdditionalDataType>) {
+        this.createRoute({
+            path,
+            handler,
+            method: "HEAD",
+            isMiddleware: false
+        });
+    }
+
+    public delete (path: string, handler: RouteFunctionHandler<AdditionalDataType>) {
+        this.createRoute({
+            path,
+            handler,
+            method: "DELETE",
+            isMiddleware: false
+        });
+    }
+
 
     /**
      * Fixing the input path to make sure it's consistent in regards of the slashes (/)
@@ -351,6 +428,11 @@ class Router<AdditionalDataType extends unknown> {
         this.routes = newRoutes;
 
         return this.basePath;
+    }
+
+    private setParentRouter (parent: Router<AdditionalDataType>) {
+        this.parent = parent;
+        this.main = this.getMainRouter();
     }
 }
 

@@ -14,13 +14,26 @@ export declare type BodyType =
     | null
     | undefined;
 
-type BuiltResponse = {
+export type BuiltResponse = {
     response: unknown;
+    tasks: Promise<unknown>[];
 };
 
 export default class RouterResponse<AdditionalDataType extends any> {
+    /**
+     * The route that initiated by the request
+     * @type {Route<AdditionalDataType>}
+     */
     public route?: Route<AdditionalDataType>;
+    /**
+     * The processed request
+     * @type {RouterRequest<AdditionalDataType>}
+     */
     public request: RouterRequest<AdditionalDataType>;
+    /**
+     * Internal data for the RouterResponse, to retrieve as normal data call .buildResponse()
+     * @type {{type: "normal" | "redirect", status: string, statusCode: number, headers: Record<string, string>, cookies: Record<string, string>, tasks: Promise<unknown>[], contentType: string, body: BodyType, redirect?: {url: string}, response?: Response}}
+     */
     public response: {
         type: "normal" | "redirect";
         status: string;
@@ -56,51 +69,51 @@ export default class RouterResponse<AdditionalDataType extends any> {
         };
     }
 
-    setRoute (route: Route<AdditionalDataType>): void {
+    public setRoute (route: Route<AdditionalDataType>): void {
         this.route = route;
     }
 
-    json (data: unknown): this {
+    public json (data: unknown): this {
         this.response.body = JSON.stringify(data);
         this.response.contentType = "application/json";
 
         return this;
     }
 
-    raw (body: BodyType, contentType: string): this {
+    public raw (body: BodyType, contentType: string): this {
         this.response.body = body;
         this.response.contentType = contentType;
 
         return this;
     }
 
-    text (text: string): this {
+    public text (text: string): this {
         this.response.body = text;
         this.response.contentType = "text/plain";
 
         return this;
     }
 
-    status (status: string): this {
+    public status (status: string): this {
         this.response.status = status;
 
         return this;
     }
 
-    statusCode (statusCode: number): this {
+    public statusCode (statusCode: number): this {
         this.response.statusCode = statusCode;
 
         return this;
     }
 
-    addTasks (tasks: Promise<unknown> | Promise<unknown>[]): this {
+    public addTasks (tasks: Promise<unknown> | Promise<unknown>[]): this {
         tasks = Array.isArray(tasks) ? tasks : [tasks];
         this.response.tasks = [...this.response.tasks, ...tasks];
 
         return this;
     }
 
-    setHeader (name: string, value: string): this {
+    public setHeader (name: string, value: string): this {
         // Suppressing since this is not supposed to be user-input related
         // eslint-disable-next-line security/detect-object-injection
         this.response.headers[name] = value;
@@ -108,7 +121,7 @@ export default class RouterResponse<AdditionalDataType extends any> {
         return this;
     }
 
-    setCookie (name: string, value: string, options?: CookieSerializeOptions): this {
+    public setCookie (name: string, value: string, options?: CookieSerializeOptions): this {
         // Suppressing since this is not supposed to be user-input related
         // eslint-disable-next-line security/detect-object-injection
         this.response.cookies[name] = cookie.serialize(
@@ -120,7 +133,7 @@ export default class RouterResponse<AdditionalDataType extends any> {
         return this;
     }
 
-    redirect (url: string, statusCode: number): this {
+    public redirect (url: string, statusCode: number): this {
         this.response.type = "redirect";
         this.response.statusCode = statusCode;
         this.response.redirect = {
@@ -130,7 +143,7 @@ export default class RouterResponse<AdditionalDataType extends any> {
         return this;
     }
 
-    setCustomResponse (response: Response): this {
+    public setCustomResponse (response: Response): this {
         this.response.response = response;
 
         return this;
@@ -165,16 +178,17 @@ export default class RouterResponse<AdditionalDataType extends any> {
         this.response.headers["content-type"] = this.response.headers["content-type"] || this.response.contentType;
 
 
-        console.log(this.route!.router);
         // Move on to transforming the data to response
-        if (this.route && this.route.router.customResponseTransformer) {
+        if (this.route && this.route.router.main && this.route.router.main.customResponseTransformer) {
             // They want to build their own response, that's fine!
             return {
-                response: this.route.router.customResponseTransformer(this.response)
+                tasks: this.response.tasks,
+                response: this.route.router.main.customResponseTransformer(this.response)
             };
         }
 
         return {
+            tasks: this.response.tasks,
             response: new Response(
                 this.response.body,
                 this.transformOptions()
