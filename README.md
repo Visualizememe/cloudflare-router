@@ -6,8 +6,8 @@ A library for easily processing incoming requests to Cloudflare Workers. Created
 [![NPM](https://img.shields.io/npm/v/cloudflare-router.svg?maxAge=3600&style=flat-square)](https://npmjs.com/package/cloudflare-router)
 [![CircleCI](https://circleci.com/gh/Visualizememe/cloudflare-router.svg?style=svg)](https://circleci.com/gh/Visualizememe/cloudflare-router)
 [![codecov](https://codecov.io/gh/Visualizememe/cloudflare-router/branch/main/graph/badge.svg)](https://codecov.io/gh/Visualizememe/cloudflare-router)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/97059473b41c44238c5698963065f47a)](https://www.codacy.com/manual/Visualizememe1/node-cf-router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Visualizememe/node-cf-router&amp;utm_campaign=Badge_Grade)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router?ref=badge_shield)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/97059473b41c44238c5698963065f47a)](https://www.codacy.com/manual/Visualizememe1/cloudflare-router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Visualizememe/cloudflare-router&amp;utm_campaign=Badge_Grade)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVisualizememe%2Fcloudflare-router.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FVisualizememe%2Fcloudflare-router?ref=badge_shield)
 [![Dependencies Status](https://status.david-dm.org/gh/Visualizememe/cloudflare-router.svg)](https://david-dm.org/Visualizememe/cloudflare-router)
 
 ----
@@ -18,7 +18,7 @@ is to tell the module when you want to process a request, and it will handle eve
 
 In order to tell the module when it should process a request (or more specifically ,telling the *router*):
 ```JavaScript
-const { Router } = require("cf-router");
+const { Router } = require("cloudflare-router");
 const router = new Router();
 const apiRouter = new Router();
 
@@ -44,4 +44,4 @@ Simply enter the following command into your terminal:
 npm install cloudflare-router
 ```
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVisualizememe%2Fcloudflare-router.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FVisualizememe%2Fcloudflare-router?ref=badge_large)
