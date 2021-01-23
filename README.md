@@ -13,10 +13,11 @@ A library for easily processing incoming requests to Cloudflare Workers. Created
 ----
 
 
-This module is super-easy to use, and it's plug-and-play. Literally. All you have to do to start
-is to tell the module when you want to process a request, and it will handle everything for you.
+This module is super-easy to use, and it's plug-and-play. Literally. All you have to do to start is to tell the module
+when you want to process a request, and it will handle everything for you.
 
 In order to tell the module when it should process a request (or more specifically ,telling the *router*):
+
 ```JavaScript
 const { Router } = require("cloudflare-router");
 const router = new Router();
@@ -32,7 +33,11 @@ apiRouter.get("/welcome/:name", (req, res) => res.text(`Welcome, ${req.params.na
 
 // Listening for requests
 addEventListener("fetch", event => {
-    event.respondWith(router.serve(event.request));
+    // Minimal boilerplate required
+    event.respondWith(
+        router.serve(event.request)
+            .then(res => res.response)
+    );
 });
 
 ```
@@ -40,6 +45,7 @@ addEventListener("fetch", event => {
 ### Installing
 
 Simply enter the following command into your terminal:
+
 ```
 npm install cloudflare-router
 ```

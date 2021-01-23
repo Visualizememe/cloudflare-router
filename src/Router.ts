@@ -3,6 +3,13 @@ import { IncomingRequest } from "./interfaces";
 import RouterRequest from "./RouterRequest";
 import RouterResponse from "./RouterResponse";
 
+
+const NO_APPEND_SLASH_IF_CHARACTERS = [
+    "*",
+    ")",
+    "?"
+];
+
 /*
     Notes:
     ---
@@ -132,7 +139,7 @@ export class Route<AdditionalDataType extends unknown> {
 
     public match (request: RouterRequest<AdditionalDataType>): { pathMatch: unknown; doesMatch: boolean } {
         const pathMatches = this.matchPath(request);
-        const methodMatches = this.method.toUpperCase() === request.method.toUpperCase();
+        const methodMatches = this.method === "ANY" ? true : (this.method.toUpperCase() === request.method.toUpperCase());
 
         return {
             pathMatch: pathMatches,
@@ -383,7 +390,7 @@ class Router<AdditionalDataType extends unknown> {
     public fixPath (path: string): string {
         path = `${this.basePath || "/"}${path.startsWith("/") ? path.slice(1) : path}`;
 
-        if (!path.endsWith("/")) {
+        if (!path.endsWith("/") && !NO_APPEND_SLASH_IF_CHARACTERS.some(char => path.endsWith(char))) {
             path += "/";
         }
 

@@ -14,8 +14,10 @@ export declare type BodyType =
     | null
     | undefined;
 
-export type BuiltResponse = {
+export type BuiltResponse<AdditionalDataType> = {
     response: unknown;
+    routerResponse: RouterResponse<AdditionalDataType>;
+    routerRequest: RouterRequest<AdditionalDataType>;
     tasks: Promise<unknown>[];
 };
 
@@ -157,7 +159,7 @@ export default class RouterResponse<AdditionalDataType extends any> {
         };
     }
 
-    buildResponse (): BuiltResponse {
+    buildResponse (): BuiltResponse<AdditionalDataType> {
         // Append all cookies into one string and set it as set-cookie header
         (() => {
             const cookies = this.response.cookies;
@@ -183,7 +185,9 @@ export default class RouterResponse<AdditionalDataType extends any> {
             // They want to build their own response, that's fine!
             return {
                 tasks: this.response.tasks,
-                response: this.route.router.main.customResponseTransformer(this.response)
+                response: this.route.router.main.customResponseTransformer(this.response),
+                routerResponse: this,
+                routerRequest: this.request
             };
         }
 
@@ -192,7 +196,9 @@ export default class RouterResponse<AdditionalDataType extends any> {
             response: new Response(
                 this.response.body,
                 this.transformOptions()
-            )
+            ),
+            routerResponse: this,
+            routerRequest: this.request
         };
     }
 }

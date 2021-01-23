@@ -6,6 +6,8 @@ const entryRouter = new Router({
 });
 const apiRouter = require("./apiRouter");
 
+entryRouter.use("/api", apiRouter);
+
 
 // Setting up routes for testing
 const setupRouter = (router) => {
@@ -24,36 +26,104 @@ const setupRouter = (router) => {
 };
 
 // Setting up the routers properly and routing /api to apiRouter
-/*
+
 setupRouter(entryRouter);
 setupRouter(apiRouter);
 
-entryRouter.use("/api", apiRouter);
-
-
- */
-
-entryRouter.get("/", (req, res) => {
-    console.log("got /");
-    res.text("hi");
-});
-
 // Util functions for the tests
-const createOptions = (router, path, otherOptions = {}) => {
+const createOptions = (path, otherOptions = {}) => {
     return {
-        url: `https://example.com/${path}`,
+        url: `https://example.com${path}`,
         method: "GET",
         headers: [],
         ...otherOptions
     };
 };
 
-// Starting the tests
-describe("Testing cloudflare-router", function () {
-    it("should return the base path", async function () {
-        const res = await entryRouter.serve(createOptions(entryRouter, ""));
-        console.log(res);
+describe("testing path functionality", function () {
+    const tmpRouter = new Router();
+    entryRouter.use("/tmp", tmpRouter);
 
-        expect(1).toBe(1);
+    // Setting up middleware
+    tmpRouter.use("*", (req, res) => {
+        req.hasTouched = true;
+    });
+
+    tmpRouter.get("/", (req, res) => res.text(req.hasTouched ? "yes" : "no"));
+    tmpRouter.get("/yes", (req, res) => res.text(req.hasTouched ? "yes" : "no"));
+
+    it("(1) should have 'yes' in body if hasTouched is a property of request", async function () {
+        const res = await entryRouter.serve(createOptions("/tmp/yes"));
+
+        expect(res).toMatchObject({
+            response: {
+                body: "yes"
+            }
+        });
+    });
+
+    it("(2) should have 'yes' in body if hasTouched is a property of request", async function () {
+        const res = await entryRouter.serve(createOptions("/tmp/"));
+
+        expect(res).toMatchObject({
+            response: {
+                body: "yes"
+            }
+        });
+    });
+});
+describe("Testing high-level cloudflare-router", function () {
+    const request = (path, method = "GET") => entryRouter.serve(createOptions(path, { method }))
+        .then(d => ({
+            body: d.response.body,
+            statusCode: d.response.statusCode
+        }));
+
+    it("(1) should return the correct path", async function () {
+        const resNormal = await request("/");
+        const resAPI = await request("/");
+
+        expect(resNormal.body).toBe("/");
+        expect(resAPI.body).toBe("/");
+    });
+
+    it("(2) should return the correct path", async function () {
+        const resNormal = await request("/test");
+        const resAPI = await request("/test");
+
+        expect(resNormal.body).toBe("/test");
+        expect(resAPI.body).toBe("/test");
+    });
+
+    it("(3) should return the correct path", async function () {
+        const resNormal = await request("/test/deep");
+        const resAPI = await request("/test/deep");
+
+        expect(resNormal.body).toBe("/test/deep");
+        expect(resAPI.body).toBe("/test/deep");
+    });
+
+    it("should respond with correct parameter", async function () {
+        const resNormal = await request("/count/3");
+        const resAPI = await request("/count/4");
+
+        expect(resNormal.body).toBe("/count/3");
+        expect(resAPI.body).toBe("/count/4");
+    });
+
+    it("should respond with correct double parameter", async function () {
+        const resNormal = await request("/increase/1/2");
+        const resAPI = await request("/increase/3/4");
+
+        expect(resNormal.body).toBe("/increase/1/2");
+        expect(resAPI.body).toBe("/increase/3/4");
+    });
+
+    it("should respond with correct parameter in deeper path", async function () {
+        const resNormal = await request("/increase/user/1");
+        const resAPI = await request("/increase/user/2");
+
+        expect(resNormal.body).toBe("/increase/user/1");
+        expect(resAPI.body).toBe("/increase/user/2");
     });
 });
