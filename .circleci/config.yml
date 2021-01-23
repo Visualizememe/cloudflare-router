@@ -5,7 +5,7 @@ orbs:
 jobs:
   build-and-test:
     executor:
-      name: node/defualt
+      name: node/default
     steps:
       - checkout
       - node/with-cache:
