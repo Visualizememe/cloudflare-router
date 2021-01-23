@@ -1,10 +1,17 @@
-## cf-router
-A simple module for easily processing incoming requests to Cloudflare Workers.
+Cloudflare-Router
+===============
+A library for easily processing incoming requests to Cloudflare Workers. Created with TypeScript!
 
 ----
-<a href="https://npmjs.com/package/bloxy"><img src="https://img.shields.io/npm/v/cf-router.svg?maxAge=3600&style=flat-square" alt="NPM"></a>
+[![NPM](https://img.shields.io/npm/v/cloudflare-router.svg?maxAge=3600&style=flat-square)](https://npmjs.com/package/bloxy)
+[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://circleci.com/gh/circleci/circleci-docs)
+[![codecov](https://codecov.io/gh/Visualizememe/cloudflare-router/branch/main/graph/badge.svg)](https://codecov.io/gh/Visualizememe/cloudflare-router)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/97059473b41c44238c5698963065f47a)](https://www.codacy.com/manual/Visualizememe1/node-cf-router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Visualizememe/node-cf-router&amp;utm_campaign=Badge_Grade)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router?ref=badge_shield)
+[![Dependencies Status](https://status.david-dm.org/gh/Visualizememe/cloudflare-router.svg)](https://david-dm.org/Visualizememe/cloudflare-router)
+
+----
+
 
 This module is super-easy to use, and it's plug-and-play. Literally. All you have to do to start
 is to tell the module when you want to process a request, and it will handle everything for you.
@@ -32,3 +39,6 @@ addEventListener("fetch", event => {
 
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FVisualizememe%2Fnode-cf-router?ref=badge_large)
+[npm-image]:https://img.shields.io/npm/v/cloudflare-router.svg
+[npm-url]:https://npmjs.com/package/cloudflare-router
+[]
