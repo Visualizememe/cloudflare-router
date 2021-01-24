@@ -1,7 +1,7 @@
 {
   "name": "cloudflare-router",
   "private": false,
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "An express-like Cloudflare Workers Router library to make processing requests much easier",
   "main": "dist/index.js",
   "engines": {
