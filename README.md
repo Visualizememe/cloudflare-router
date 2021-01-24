@@ -6,7 +6,7 @@ A library for easily processing incoming requests to Cloudflare Workers. Created
 [![NPM](https://img.shields.io/npm/v/cloudflare-router.svg?maxAge=3600&style=flat-square)](https://npmjs.com/package/cloudflare-router)
 [![CircleCI](https://circleci.com/gh/Visualizememe/cloudflare-router.svg?style=svg)](https://circleci.com/gh/Visualizememe/cloudflare-router)
 [![codecov](https://codecov.io/gh/Visualizememe/cloudflare-router/branch/main/graph/badge.svg)](https://codecov.io/gh/Visualizememe/cloudflare-router)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/97059473b41c44238c5698963065f47a)](https://www.codacy.com/manual/Visualizememe1/cloudflare-router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Visualizememe/cloudflare-router&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4a69949081d1427db95bf450453adda2)](https://www.codacy.com/gh/Visualizememe/cloudflare-router/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Visualizememe/cloudflare-router&amp;utm_campaign=Badge_Grade)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVisualizememe%2Fcloudflare-router.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FVisualizememe%2Fcloudflare-router?ref=badge_shield)
 [![Dependencies Status](https://status.david-dm.org/gh/Visualizememe/cloudflare-router.svg)](https://david-dm.org/Visualizememe/cloudflare-router)
 
