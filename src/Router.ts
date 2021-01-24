@@ -1,7 +1,7 @@
 import UrlPattern from "url-pattern";
 import { IncomingRequest } from "./interfaces";
 import RouterRequest from "./RouterRequest";
-import RouterResponse from "./RouterResponse";
+import RouterResponse, { BuiltResponse } from "./RouterResponse";
 
 
 const NO_APPEND_SLASH_IF_CHARACTERS = [
@@ -123,7 +123,7 @@ export class Route<AdditionalDataType extends unknown> {
         const pathPattern = this.router.createUrlPattern(fixedPath);
         this.path = {
             inputPath: options.path,
-            formattedPath: this.router.fixPath(options.path),
+            formattedPath: fixedPath,
             pattern: pathPattern
         };
         this.handler = options.handler;
@@ -244,53 +244,50 @@ class Router<AdditionalDataType extends unknown> {
         return foundMatching;
     }
 
-    public async serve (request: RouterRequest<AdditionalDataType> | IncomingRequest, additionalData?: AdditionalDataType, response?: RouterResponse<AdditionalDataType>): Promise<any> {
-        const alreadyProcessed = request instanceof RouterRequest;
+    public async serve (request: RouterRequest<AdditionalDataType> | IncomingRequest, additionalData?: AdditionalDataType, response?: RouterResponse<AdditionalDataType>): Promise<BuiltResponse<AdditionalDataType>> {
         request = (!(request instanceof RouterRequest) ? new RouterRequest<AdditionalDataType>(request as IncomingRequest, additionalData) : request) as RouterRequest<AdditionalDataType>;
         response = response || new RouterResponse<AdditionalDataType>(request as RouterRequest<AdditionalDataType>);
 
-        if (!alreadyProcessed) {
-            const foundMatchingRoutes = this.findMatchingRoutes(request);
-            const middlewares = foundMatchingRoutes.filter(matchingRoute => matchingRoute.route.isMiddleware);
-            const responseHandler = foundMatchingRoutes.filter(matchingRoute => !matchingRoute.route.isMiddleware)
-                .find(matchingRoute => matchingRoute);
+        const foundMatchingRoutes = this.findMatchingRoutes(request);
+        const middlewares = foundMatchingRoutes.filter(matchingRoute => matchingRoute.route.isMiddleware);
+        const responseHandler = foundMatchingRoutes.filter(matchingRoute => !matchingRoute.route.isMiddleware)
+            .find(matchingRoute => matchingRoute);
 
-            if (!responseHandler) {
-                throw new Error(`Could not find a response handler for the request!`);
-            }
-
-            // We're doing this to make sure that the params property is available
-            request.setParams(responseHandler.match);
-            // We're setting the route so that it's accessible from within the RouterResponse instance
-            response.setRoute(responseHandler.route);
-
-
-            if (middlewares.length > 0) {
-                const executeMiddleware = async (middleware: Route<AdditionalDataType>): Promise<unknown> => {
-                    const handler = middleware.handler as RouteFunctionHandler<AdditionalDataType>;
-
-                    return handler(request as RouterRequest<AdditionalDataType>, response!, additionalData);
-                };
-
-                if (this.isWaterfall) {
-                    for (const middleware of middlewares) {
-                        const waitingPromise = executeMiddleware(middleware.route);
-
-                        // eslint-disable-next-line no-await-in-loop
-                        await waitingPromise;
-                    }
-                } else {
-                    await Promise.all(
-                        middlewares.map(middleware => executeMiddleware(middleware.route))
-                    );
-                }
-            }
-
-            // Wait for the response handler to finish
-            await (responseHandler.route.handler as RouteFunctionHandler<AdditionalDataType>)(request, response, additionalData);
-
-            return response.buildResponse();
+        if (!responseHandler) {
+            throw new Error(`Could not find a response handler for the request!`);
         }
+
+        // We're doing this to make sure that the params property is available
+        request.setParams(responseHandler.match);
+        // We're setting the route so that it's accessible from within the RouterResponse instance
+        response.setRoute(responseHandler.route);
+
+
+        if (middlewares.length > 0) {
+            const executeMiddleware = async (middleware: Route<AdditionalDataType>): Promise<unknown> => {
+                const handler = middleware.handler as RouteFunctionHandler<AdditionalDataType>;
+
+                return handler(request as RouterRequest<AdditionalDataType>, response!, additionalData);
+            };
+
+            if (this.isWaterfall) {
+                for (const middleware of middlewares) {
+                    const waitingPromise = executeMiddleware(middleware.route);
+
+                    // eslint-disable-next-line no-await-in-loop
+                    await waitingPromise;
+                }
+            } else {
+                await Promise.all(
+                    middlewares.map(middleware => executeMiddleware(middleware.route))
+                );
+            }
+        }
+
+        // Wait for the response handler to finish
+        await (responseHandler.route.handler as RouteFunctionHandler<AdditionalDataType>)(request, response, additionalData);
+
+        return response.buildResponse();
     }
 
     /**
@@ -303,12 +300,17 @@ class Router<AdditionalDataType extends unknown> {
             throw new Error(`Cannot have handler as instance of Router if method is not ANY!`);
         }
 
-        const createdRoute = new Route(
+        return new Route(
             this,
             {
                 ...options
             }
         );
+    }
+
+    public createRouteAndAddInternally (options: RouteOptions<AdditionalDataType>): Route<AdditionalDataType> {
+        const createdRoute = this.createRoute(options);
+
         this.routes.push(createdRoute);
 
         return createdRoute;
@@ -316,18 +318,17 @@ class Router<AdditionalDataType extends unknown> {
 
     public use (path: string, handler: RouteHandler<AdditionalDataType>): void {
         if (handler instanceof Router) {
-            // Since it's a router, we need to adjust its base path and parent router
-            handler.setBasePath(this.fixPath(path));
+            handler.setBasePath(path, true);
             handler.setParentRouter(this);
 
-            this.createRoute({
+            this.createRouteAndAddInternally({
                 path,
                 handler,
                 method: "ANY",
                 isMiddleware: false
             });
         } else {
-            this.createRoute({
+            this.createRouteAndAddInternally({
                 path,
                 handler,
                 method: "ANY",
@@ -337,7 +338,7 @@ class Router<AdditionalDataType extends unknown> {
     }
 
     public get (path: string, handler: RouteHandler<AdditionalDataType>): void {
-        this.createRoute({
+        this.createRouteAndAddInternally({
             path,
             handler,
             method: "GET",
@@ -346,7 +347,7 @@ class Router<AdditionalDataType extends unknown> {
     }
 
     public post (path: string, handler: RouteHandler<AdditionalDataType>): void {
-        this.createRoute({
+        this.createRouteAndAddInternally({
             path,
             handler,
             method: "POST",
@@ -355,7 +356,7 @@ class Router<AdditionalDataType extends unknown> {
     }
 
     public options (path: string, handler: RouteFunctionHandler<AdditionalDataType>) {
-        this.createRoute({
+        this.createRouteAndAddInternally({
             path,
             handler,
             method: "OPTIONS",
@@ -364,7 +365,7 @@ class Router<AdditionalDataType extends unknown> {
     }
 
     public head (path: string, handler: RouteFunctionHandler<AdditionalDataType>) {
-        this.createRoute({
+        this.createRouteAndAddInternally({
             path,
             handler,
             method: "HEAD",
@@ -373,7 +374,7 @@ class Router<AdditionalDataType extends unknown> {
     }
 
     public delete (path: string, handler: RouteFunctionHandler<AdditionalDataType>) {
-        this.createRoute({
+        this.createRouteAndAddInternally({
             path,
             handler,
             method: "DELETE",
@@ -410,29 +411,33 @@ class Router<AdditionalDataType extends unknown> {
      * Sets the base path for the Router, and updates all the belonging routes with the new base path
      * Returns a string with the new base path
      * @param {string} path
+     * @param {boolean | undefined} fixRoutes
      * @returns {string}
      * @private
      */
-    private setBasePath (path?: string): string {
+    private setBasePath (path?: string, fixRoutes?: boolean): string {
         // Since Router.fixPath appends the existing basePath, we don't want it to add the already existing one
         this.basePath = "/";
         this.basePath = this.fixPath(path || "/");
 
-        // New array for the routes that have been updated with the new base path
-        const newRoutes: Route<AdditionalDataType>[] = [];
+        // We want this to explicitly be true, because otherwise we risk running into an infinite recursive loop
+        if (fixRoutes) {
+            // New array for the routes that have been updated with the new base path
+            const newRoutes: Route<AdditionalDataType>[] = [];
 
-        for (const oldRoute of this.routes) {
-            const newRoute = this.createRoute({
-                path: oldRoute.path.inputPath,
-                handler: oldRoute.handler,
-                method: oldRoute.method,
-                isMiddleware: oldRoute.isMiddleware
-            });
+            for (const oldRoute of this.routes) {
+                const newRoute = this.createRoute({
+                    path: oldRoute.path.inputPath,
+                    handler: oldRoute.handler,
+                    method: oldRoute.method,
+                    isMiddleware: oldRoute.isMiddleware
+                });
 
-            newRoutes.push(newRoute);
+                newRoutes.push(newRoute);
+            }
+
+            this.routes = newRoutes;
         }
-
-        this.routes = newRoutes;
 
         return this.basePath;
     }

@@ -16,6 +16,11 @@ export default class RouterRequest<AdditionalDataType extends unknown> {
     public headers: Record<string, string>;
     public cookies: Record<string, string>;
     /**
+     * Allows for middlewares to add data to the request type-safe
+     * @type {Map<any, any>}
+     */
+    public data: Map<any, any>;
+    /**
      * The route that was found with the request
      * @type {Route<AdditionalDataType>}
      */
@@ -44,6 +49,7 @@ export default class RouterRequest<AdditionalDataType extends unknown> {
         this.body = request.body;
         this.headers = {};
         this.cookies = {};
+        this.data = new Map<any, any>();
 
         this.parseHeaders();
     }
