@@ -180,7 +180,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../classes/router.default/" class="md-tabs__link">
+      <a href="../../classes/router.route/" class="md-tabs__link">
         Classes
       </a>
     </li>
@@ -314,18 +314,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../classes/router.default/" class="md-nav__link">
-        Class: default<AdditionalDataType\>
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../classes/router.route/" class="md-nav__link">
         Class: Route<AdditionalDataType\>
       </a>
@@ -338,8 +326,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../classes/routerrequest.default/" class="md-nav__link">
-        Class: default<AdditionalDataType\>
+      <a href="../../classes/router.router-1/" class="md-nav__link">
+        Class: Router<AdditionalDataType\>
       </a>
     </li>
   
@@ -350,8 +338,20 @@
   
   
     <li class="md-nav__item">
-      <a href="../../classes/routerresponse.default/" class="md-nav__link">
-        Class: default<AdditionalDataType\>
+      <a href="../../classes/routerrequest.routerrequest-1/" class="md-nav__link">
+        Class: RouterRequest<AdditionalDataType\>
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../classes/routerresponse.routerresponse-1/" class="md-nav__link">
+        Class: RouterResponse<AdditionalDataType\>
       </a>
     </li>
   
@@ -788,7 +788,7 @@
 <h3 id="classes">Classes</h3>
 <ul>
 <li><a href="../../classes/router.route/">Route</a></li>
-<li><a href="../../classes/router.default/">default</a></li>
+<li><a href="../../classes/router.router-1/">Router</a></li>
 </ul>
 <h3 id="interfaces">Interfaces</h3>
 <ul>
@@ -808,7 +808,7 @@ Default is "GET"</p>
 <p>Defined in: <a href="https://github.com/Visualizememe/cloudflare-router/blob/65cfc56/src/Router.ts#L29">Router.ts:29</a></p>
 <hr />
 <h3 id="routefunctionhandler">RouteFunctionHandler</h3>
-<p>Ƭ <strong>RouteFunctionHandler</strong>&lt;AdditionalDataType>: (<code>request</code>: <a href="../../classes/routerrequest.default/"><em>default</em></a>&lt;AdditionalDataType>, <code>response</code>: <a href="../../classes/routerresponse.default/"><em>default</em></a><AdditionalDataType\>, <code>additionalData?</code>: AdditionalDataType) => <em>void</em></p>
+<p>Ƭ <strong>RouteFunctionHandler</strong>&lt;AdditionalDataType>: (<code>request</code>: <a href="../../classes/routerrequest.routerrequest-1/"><em>RouterRequest</em></a>&lt;AdditionalDataType>, <code>response</code>: <a href="../../classes/routerresponse.routerresponse-1/"><em>RouterResponse</em></a><AdditionalDataType\>, <code>additionalData?</code>: AdditionalDataType) => <em>void</em></p>
 <p>The function that will be called if the incoming request matches a route's criteria</p>
 <h4 id="type-parameters">Type parameters:</h4>
 <table>
@@ -824,7 +824,7 @@ Default is "GET"</p>
 </tbody>
 </table>
 <h4 id="type-declaration">Type declaration:</h4>
-<p>▸ (<code>request</code>: <a href="../../classes/routerrequest.default/"><em>default</em></a>&lt;AdditionalDataType>, <code>response</code>: <a href="../../classes/routerresponse.default/"><em>default</em></a>&lt;AdditionalDataType>, <code>additionalData?</code>: AdditionalDataType): <em>void</em></p>
+<p>▸ (<code>request</code>: <a href="../../classes/routerrequest.routerrequest-1/"><em>RouterRequest</em></a>&lt;AdditionalDataType>, <code>response</code>: <a href="../../classes/routerresponse.routerresponse-1/"><em>RouterResponse</em></a>&lt;AdditionalDataType>, <code>additionalData?</code>: AdditionalDataType): <em>void</em></p>
 <h4 id="parameters">Parameters:</h4>
 <table>
 <thead>
@@ -836,11 +836,11 @@ Default is "GET"</p>
 <tbody>
 <tr>
 <td align="left"><code>request</code></td>
-<td align="left"><a href="../../classes/routerrequest.default/"><em>default</em></a>&lt;AdditionalDataType></td>
+<td align="left"><a href="../../classes/routerrequest.routerrequest-1/"><em>RouterRequest</em></a>&lt;AdditionalDataType></td>
 </tr>
 <tr>
 <td align="left"><code>response</code></td>
-<td align="left"><a href="../../classes/routerresponse.default/"><em>default</em></a>&lt;AdditionalDataType></td>
+<td align="left"><a href="../../classes/routerresponse.routerresponse-1/"><em>RouterResponse</em></a>&lt;AdditionalDataType></td>
 </tr>
 <tr>
 <td align="left"><code>additionalData?</code></td>
@@ -852,7 +852,7 @@ Default is "GET"</p>
 <p>Defined in: <a href="https://github.com/Visualizememe/cloudflare-router/blob/65cfc56/src/Router.ts#L60">Router.ts:60</a></p>
 <hr />
 <h3 id="routehandler">RouteHandler</h3>
-<p>Ƭ <strong>RouteHandler</strong>&lt;AdditionalDataType>: <a href="../../classes/router.default/"><em>default</em></a>&lt;AdditionalDataType> | <a href="./#routefunctionhandler"><em>RouteFunctionHandler</em></a>&lt;AdditionalDataType></p>
+<p>Ƭ <strong>RouteHandler</strong>&lt;AdditionalDataType>: <a href="../../classes/router.router-1/"><em>Router</em></a>&lt;AdditionalDataType> | <a href="./#routefunctionhandler"><em>RouteFunctionHandler</em></a>&lt;AdditionalDataType></p>
 <p>The handler that will be used if the request matches the route's criteria</p>
 <h4 id="type-parameters_1">Type parameters:</h4>
 <table>
