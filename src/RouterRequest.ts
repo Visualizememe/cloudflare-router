@@ -4,7 +4,7 @@ import qs from "querystring";
 import { IncomingRequest } from "./interfaces";
 
 
-export default class RouterRequest<AdditionalDataType extends unknown> {
+export class RouterRequest<AdditionalDataType extends unknown> {
     public request: IncomingRequest;
     public additionalData: AdditionalDataType | null;
     public url: string;

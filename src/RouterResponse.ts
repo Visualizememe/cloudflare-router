@@ -1,4 +1,4 @@
-import RouterRequest from "./RouterRequest";
+import { RouterRequest } from "./RouterRequest";
 import cookie, { CookieSerializeOptions } from "cookie";
 import { Route } from "./Router";
 
@@ -21,7 +21,7 @@ export type BuiltResponse<AdditionalDataType> = {
     tasks: Promise<unknown>[];
 };
 
-export default class RouterResponse<AdditionalDataType extends any> {
+export class RouterResponse<AdditionalDataType extends any> {
     /**
      * The route that initiated by the request
      * @type {Route<AdditionalDataType>}

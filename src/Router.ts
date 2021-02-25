@@ -1,7 +1,7 @@
 import UrlPattern from "url-pattern";
 import { IncomingRequest } from "./interfaces";
-import RouterRequest from "./RouterRequest";
-import RouterResponse, { BuiltResponse } from "./RouterResponse";
+import { RouterRequest } from "./RouterRequest";
+import { BuiltResponse, RouterResponse } from "./RouterResponse";
 
 
 const NO_APPEND_SLASH_IF_CHARACTERS = [
@@ -179,7 +179,7 @@ type MatchingRoute<AdditionalDataType> = {
 };
 
 
-class Router<AdditionalDataType extends unknown> {
+export class Router<AdditionalDataType extends unknown> {
     public basePath: string;
     public isWaterfall: boolean;
     public routes: Route<AdditionalDataType>[];
@@ -447,6 +447,3 @@ class Router<AdditionalDataType extends unknown> {
         this.main = this.getMainRouter();
     }
 }
-
-
-export default Router;

@@ -19,7 +19,8 @@
   "scripts": {
     "test": "jest",
     "build": "tsc --skipLibCheck",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "create-docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --namedAnchors --excludeExternals --out docs src && mkdocs build"
   },
   "author": "Visualizememe",
   "license": "MIT",
@@ -37,6 +38,9 @@
     "eslint-plugin-security": "^1.4.0",
     "jest": "^26.6.3",
     "joi": "^17.3.0",
+    "typedoc": "^0.20.28",
+    "typedoc-plugin-markdown": "^3.5.0",
+    "typedoc-plugin-markdown-pages": "^0.3.0",
     "typescript": "^3.9.7"
   },
   "bugs": {
